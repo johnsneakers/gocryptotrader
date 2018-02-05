@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	api2 "github.com/thrasher-/gocryptotrader/api"
 	"log"
 	"net/http"
 	"time"
@@ -44,8 +45,14 @@ var routes = Routes{}
 // router
 func NewRouter(exchanges []exchange.IBotExchange) *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
-
+	api := api2.InitRestApi(bot)
 	routes = Routes{
+		Route{
+			"",
+			"GET",
+			"/config/supportCoin",
+			api.RESTGetSupportCoin,
+		},
 		Route{
 			"",
 			"GET",

@@ -93,6 +93,7 @@ type Config struct {
 	FiatDisplayCurrency      string
 	Portfolio                portfolio.Base   `json:"PortfolioAddresses"`
 	SMS                      SMSGlobalConfig  `json:"SMSGlobal"`
+	SupportCoin				 []string 		  `json:"SupportCoin"`
 	Webserver                WebserverConfig  `json:"Webserver"`
 	Exchanges                []ExchangeConfig `json:"Exchanges"`
 }

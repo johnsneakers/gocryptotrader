@@ -26,6 +26,7 @@ import {
   MatLineModule,
   MatTooltipModule,
   MatTabsModule,
+  MatTableModule,
 } from '@angular/material';
 
 
@@ -118,11 +119,12 @@ import { CurrencyListComponent } from './pages/currency-list/currency-list.compo
     MatLineModule,
     MatTooltipModule,
     MatTabsModule,
+    MatTableModule,
   ],
   providers: [
     ElectronService,
     WebsocketService,
-    WebsocketHandlerService, 
+    WebsocketHandlerService,
     SidebarService,
     StyleManagerService,
     ThemeStorageService,

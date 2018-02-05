@@ -54,7 +54,7 @@ var WebsocketClientHub []WebsocketClient
 // WebsocketClientHandler upgrades the HTTP connection to a websocket
 // compatible one
 func WebsocketClientHandler(w http.ResponseWriter, r *http.Request) {
-	connectionLimit := bot.config.Webserver.WebsocketConnectionLimit
+	connectionLimit := bot.Config.Webserver.WebsocketConnectionLimit
 	numClients := len(WebsocketClientHub)
 
 	if numClients >= connectionLimit {
@@ -71,8 +71,8 @@ func WebsocketClientHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Allow insecure origin if the Origin request header is present and not
 	// equal to the Host request header. Default to false
-	bot.config.Webserver.WebsocketAllowInsecureOrigin = true
-	if bot.config.Webserver.WebsocketAllowInsecureOrigin {
+	bot.Config.Webserver.WebsocketAllowInsecureOrigin = true
+	if bot.Config.Webserver.WebsocketAllowInsecureOrigin {
 		upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 	}
 
@@ -147,7 +147,7 @@ var wsHandlers = map[string]wsCommandHandler{
 func wsGetConfig(wsClient *websocket.Conn, data interface{}) error {
 	wsResp := WebsocketEventResponse{
 		Event: "GetConfig",
-		Data:  bot.config,
+		Data:  bot.Config,
 	}
 	return wsClient.WriteJSON(wsResp)
 }
@@ -166,7 +166,7 @@ func wsSaveConfig(wsClient *websocket.Conn, data interface{}) error {
 		}
 	}
 
-	err = bot.config.UpdateConfig(bot.configFile, cfg)
+	err = bot.Config.UpdateConfig(bot.ConfigFile, cfg)
 	if err != nil {
 		wsResp.Error = err.Error()
 		err = wsClient.WriteJSON(wsResp)
@@ -269,7 +269,7 @@ func wsGetPortfolio(wsClient *websocket.Conn, data interface{}) error {
 	wsResp := WebsocketEventResponse{
 		Event: "GetPortfolio",
 	}
-	wsResp.Data = bot.portfolio.GetPortfolioSummary()
+	wsResp.Data = bot.Portfolio.GetPortfolioSummary()
 	return wsClient.WriteJSON(wsResp)
 }
 
@@ -313,8 +313,8 @@ func WebsocketHandler() {
 					log.Println(err)
 					continue
 				}
-				hashPW := common.HexEncodeToString(common.GetSHA256([]byte(bot.config.Webserver.AdminPassword)))
-				if auth.Username == bot.config.Webserver.AdminUsername && auth.Password == hashPW {
+				hashPW := common.HexEncodeToString(common.GetSHA256([]byte(bot.Config.Webserver.AdminPassword)))
+				if auth.Username == bot.Config.Webserver.AdminUsername && auth.Password == hashPW {
 					WebsocketClientHub[x].Authenticated = true
 					wsResp := WebsocketEventResponse{
 						Event: "auth",

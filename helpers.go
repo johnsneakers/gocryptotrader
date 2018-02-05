@@ -18,9 +18,9 @@ import (
 func MapCurrenciesByExchange(p []pair.CurrencyPair) map[string][]pair.CurrencyPair {
 	currencyExchange := make(map[string][]pair.CurrencyPair)
 	for x := range p {
-		for y := range bot.config.Exchanges {
-			exchName := bot.config.Exchanges[y].Name
-			success, err := bot.config.SupportsPair(exchName, p[x])
+		for y := range bot.Config.Exchanges {
+			exchName := bot.Config.Exchanges[y].Name
+			success, err := bot.Config.SupportsPair(exchName, p[x])
 			if err != nil || !success {
 				continue
 			}
@@ -43,13 +43,13 @@ func MapCurrenciesByExchange(p []pair.CurrencyPair) map[string][]pair.CurrencyPa
 // a currency pair based on whether the exchange is enabled or not
 func GetExchangeNamesByCurrency(p pair.CurrencyPair, enabled bool) []string {
 	var exchanges []string
-	for x := range bot.config.Exchanges {
-		if enabled != bot.config.Exchanges[x].Enabled {
+	for x := range bot.Config.Exchanges {
+		if enabled != bot.Config.Exchanges[x].Enabled {
 			continue
 		}
 
-		exchName := bot.config.Exchanges[x].Name
-		success, err := bot.config.SupportsPair(exchName, p)
+		exchName := bot.Config.Exchanges[x].Name
+		success, err := bot.Config.SupportsPair(exchName, p)
 		if err != nil {
 			continue
 		}
@@ -129,10 +129,10 @@ func GetRelatableCurrencies(p pair.CurrencyPair, incOrig bool) []pair.CurrencyPa
 func GetSpecificOrderbook(currency, exchangeName, assetType string) (orderbook.Base, error) {
 	var specificOrderbook orderbook.Base
 	var err error
-	for x := range bot.exchanges {
-		if bot.exchanges[x] != nil {
-			if bot.exchanges[x].GetName() == exchangeName {
-				specificOrderbook, err = bot.exchanges[x].GetOrderbookEx(
+	for x := range bot.Exchanges {
+		if bot.Exchanges[x] != nil {
+			if bot.Exchanges[x].GetName() == exchangeName {
+				specificOrderbook, err = bot.Exchanges[x].GetOrderbookEx(
 					pair.NewCurrencyPairFromString(currency),
 					assetType,
 				)
@@ -148,10 +148,10 @@ func GetSpecificOrderbook(currency, exchangeName, assetType string) (orderbook.B
 func GetSpecificTicker(currency, exchangeName, assetType string) (ticker.Price, error) {
 	var specificTicker ticker.Price
 	var err error
-	for x := range bot.exchanges {
-		if bot.exchanges[x] != nil {
-			if bot.exchanges[x].GetName() == exchangeName {
-				specificTicker, err = bot.exchanges[x].GetTickerPrice(
+	for x := range bot.Exchanges {
+		if bot.Exchanges[x] != nil {
+			if bot.Exchanges[x].GetName() == exchangeName {
+				specificTicker, err = bot.Exchanges[x].GetTickerPrice(
 					pair.NewCurrencyPairFromString(currency),
 					assetType,
 				)
