@@ -1,35 +1,39 @@
-<mat-list>
-    <h3 matSubheader>Poloniex</h3>
-    <mat-list-item >
-       <mat-icon matListIcon>attach_money</mat-icon>
-       <h4 matLine>BTC_USD</h4>
-       <button mat-button>SELECT</button>
-    </mat-list-item>
-    <mat-list-item >
-        <mat-icon matListIcon>attach_money</mat-icon>
-        <h4 matLine>LTC_USD</h4>
-        <button mat-button>SELECT</button>
-     </mat-list-item>
-     <mat-list-item >
-        <mat-icon matListIcon>attach_money</mat-icon>
-        <h4 matLine>ETH_USD</h4>
-        <button mat-button>SELECT</button>
-     </mat-list-item>
-    <mat-divider></mat-divider>
-    <h3 matSubheader>Kraken</h3>
-    <mat-list-item >
-       <mat-icon matListIcon>attach_money</mat-icon>
-       <h4 matLine>BTC_USD</h4>
-       <button mat-button>SELECT</button>
-    </mat-list-item>
-    <mat-list-item >
-        <mat-icon matListIcon>attach_money</mat-icon>
-        <h4 matLine>LTC_USD</h4>
-        <button mat-button>SELECT</button>
-     </mat-list-item>
-     <mat-list-item >
-        <mat-icon matListIcon>attach_money</mat-icon>
-        <h4 matLine>ETH_USD</h4>
-        <button mat-button>SELECT</button>
-     </mat-list-item>
- </mat-list>
+ <mat-accordion>
+     <mat-expansion-panel *ngFor="let x of currency_list">
+         <mat-expansion-panel-header>
+             <mat-panel-title>
+                 {{x.name}}
+             </mat-panel-title>
+             <mat-panel-description>
+             </mat-panel-description>
+         </mat-expansion-panel-header>
+          <mat-table #table [dataSource]="dataSource">
+            <!-- Position Column -->
+            <ng-container matColumnDef="position">
+              <mat-header-cell *matHeaderCellDef> No. </mat-header-cell>
+              <mat-cell *matCellDef="let element"> {{element.position}} </mat-cell>
+            </ng-container>
+
+            <!-- Name Column -->
+            <ng-container matColumnDef="name">
+              <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+              <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+            </ng-container>
+
+            <!-- Weight Column -->
+            <ng-container matColumnDef="weight">
+              <mat-header-cell *matHeaderCellDef> Weight </mat-header-cell>
+              <mat-cell *matCellDef="let element"> {{element.weight}} </mat-cell>
+            </ng-container>
+
+            <!-- Symbol Column -->
+            <ng-container matColumnDef="symbol">
+              <mat-header-cell *matHeaderCellDef> Symbol </mat-header-cell>
+              <mat-cell *matCellDef="let element"> {{element.symbol}} </mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
+     </mat-expansion-panel>
+ </mat-accordion>

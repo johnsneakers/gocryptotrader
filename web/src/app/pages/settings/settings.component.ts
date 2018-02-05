@@ -22,7 +22,6 @@ export class SettingsComponent implements OnInit {
   constructor(private websocketHandler: WebsocketHandlerService) {
     this.ws = websocketHandler;
     this.ws.messages.subscribe(msg => {
-      
       if (msg.Event === 'GetConfig') {
         this.settings = <Config>msg.data;
       } else if (msg.Event === 'SaveConfig') {
@@ -138,6 +137,7 @@ export interface Config {
   CurrencyPairFormat: CurrencyPairFormat;
   PortfolioAddresses: PortfolioAddresses;
   SMSGlobal: SMSGlobal;
+  SupportCoin: Array<string>;
   Webserver: Webserver;
   Exchanges: Exchange[];
 }

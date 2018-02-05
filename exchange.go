@@ -37,8 +37,8 @@ var (
 // CheckExchangeExists returns true whether or not an exchange has already
 // been loaded
 func CheckExchangeExists(exchName string) bool {
-	for x := range bot.exchanges {
-		if common.StringToLower(bot.exchanges[x].GetName()) == common.StringToLower(exchName) {
+	for x := range bot.Exchanges {
+		if common.StringToLower(bot.Exchanges[x].GetName()) == common.StringToLower(exchName) {
 			return true
 		}
 	}
@@ -47,9 +47,9 @@ func CheckExchangeExists(exchName string) bool {
 
 // GetExchangeByName returns an exchange given an exchange name
 func GetExchangeByName(exchName string) exchange.IBotExchange {
-	for x := range bot.exchanges {
-		if common.StringToLower(bot.exchanges[x].GetName()) == common.StringToLower(exchName) {
-			return bot.exchanges[x]
+	for x := range bot.Exchanges {
+		if common.StringToLower(bot.Exchanges[x].GetName()) == common.StringToLower(exchName) {
+			return bot.Exchanges[x]
 		}
 	}
 	return nil
@@ -59,7 +59,7 @@ func GetExchangeByName(exchName string) exchange.IBotExchange {
 func ReloadExchange(name string) error {
 	nameLower := common.StringToLower(name)
 
-	if len(bot.exchanges) == 0 {
+	if len(bot.Exchanges) == 0 {
 		return ErrNoExchangesLoaded
 	}
 
@@ -67,7 +67,7 @@ func ReloadExchange(name string) error {
 		return ErrExchangeNotFound
 	}
 
-	exchCfg, err := bot.config.GetExchangeConfig(name)
+	exchCfg, err := bot.Config.GetExchangeConfig(name)
 	if err != nil {
 		return err
 	}
@@ -82,7 +82,7 @@ func ReloadExchange(name string) error {
 func UnloadExchange(name string) error {
 	nameLower := common.StringToLower(name)
 
-	if len(bot.exchanges) == 0 {
+	if len(bot.Exchanges) == 0 {
 		return ErrNoExchangesLoaded
 	}
 
@@ -90,21 +90,21 @@ func UnloadExchange(name string) error {
 		return ErrExchangeNotFound
 	}
 
-	exchCfg, err := bot.config.GetExchangeConfig(name)
+	exchCfg, err := bot.Config.GetExchangeConfig(name)
 	if err != nil {
 		return err
 	}
 
 	exchCfg.Enabled = false
-	err = bot.config.UpdateExchangeConfig(exchCfg)
+	err = bot.Config.UpdateExchangeConfig(exchCfg)
 	if err != nil {
 		return err
 	}
 
-	for x := range bot.exchanges {
-		if bot.exchanges[x].GetName() == name {
-			bot.exchanges[x].SetEnabled(false)
-			bot.exchanges = append(bot.exchanges[:x], bot.exchanges[x+1:]...)
+	for x := range bot.Exchanges {
+		if bot.Exchanges[x].GetName() == name {
+			bot.Exchanges[x].SetEnabled(false)
+			bot.Exchanges = append(bot.Exchanges[:x], bot.Exchanges[x+1:]...)
 			return nil
 		}
 	}
@@ -117,7 +117,7 @@ func LoadExchange(name string) error {
 	nameLower := common.StringToLower(name)
 	var exch exchange.IBotExchange
 
-	if len(bot.exchanges) > 0 {
+	if len(bot.Exchanges) > 0 {
 		if CheckExchangeExists(nameLower) {
 			return ErrExchangeAlreadyLoaded
 		}
@@ -171,8 +171,8 @@ func LoadExchange(name string) error {
 	}
 
 	exch.SetDefaults()
-	bot.exchanges = append(bot.exchanges, exch)
-	exchCfg, err := bot.config.GetExchangeConfig(name)
+	bot.Exchanges = append(bot.Exchanges, exch)
+	exchCfg, err := bot.Config.GetExchangeConfig(name)
 	if err != nil {
 		return err
 	}
@@ -185,7 +185,7 @@ func LoadExchange(name string) error {
 
 // SetupExchanges sets up the exchanges used by the bot
 func SetupExchanges() {
-	for _, exch := range bot.config.Exchanges {
+	for _, exch := range bot.Config.Exchanges {
 		if CheckExchangeExists(exch.Name) {
 			e := GetExchangeByName(exch.Name)
 			if e == nil {

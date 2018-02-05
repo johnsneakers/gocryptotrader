@@ -3,19 +3,24 @@ import { ElectronService } from './providers/electron.service';
 import { MatSidenav } from '@angular/material';
 import { SidebarService } from './services/sidebar/sidebar.service';
 import { Router, NavigationEnd } from '@angular/router';
-
+import { ConfigService } from "./services/config/config.service"
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  providers:[ConfigService]
 })
 export class AppComponent {
   sidebarService: SidebarService
   public currentUrl:string;
   @ViewChild('sidenav') public sidenav: MatSidenav;
   
-  constructor(public electronService: ElectronService,something: SidebarService, private router:Router) {
-
+  constructor(public electronService: ElectronService,
+              something: SidebarService, 
+              private confsrvs:ConfigService,
+              private router:Router) {
+    
+    confsrvs.initConf();
     if (electronService.isElectron()) {
       console.log('Mode electron');
       // Check if electron is correctly injected (see externals in webpack.config.js)

@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/thrasher-/gocryptotrader/global"
 	"log"
 	"net/http"
 	"os"
@@ -20,17 +21,7 @@ import (
 	"github.com/thrasher-/gocryptotrader/smsglobal"
 )
 
-// Bot contains configuration, portfolio, exchange & ticker data and is the
-// overarching type across this code base.
-type Bot struct {
-	config     *config.Config
-	smsglobal  *smsglobal.Base
-	portfolio  *portfolio.Base
-	exchanges  []exchange.IBotExchange
-	shutdown   chan bool
-	dryRun     bool
-	configFile string
-}
+
 
 const banner = `
    ______        ______                     __        ______                  __           
@@ -41,13 +32,12 @@ const banner = `
                           /____//_/                                                        
 `
 
-var bot Bot
+var bot global.Bot
 
 func main() {
 	HandleInterrupt()
-
 	//Handle flags
-	flag.StringVar(&bot.configFile, "config", config.GetFilePath(""), "config file to load")
+	flag.StringVar(&bot.ConfigFile, "config", config.GetFilePath(""), "config file to load")
 	dryrun := flag.Bool("dryrun", false, "dry runs bot, doesn't save config file")
 	version := flag.Bool("version", false, "retrieves current GoCryptoTrader version")
 	flag.Parse()
@@ -58,30 +48,30 @@ func main() {
 	}
 
 	if *dryrun {
-		bot.dryRun = true
+		bot.DryRun = true
 	}
 
-	bot.config = &config.Cfg
+	bot.Config = &config.Cfg
 	fmt.Println(banner)
 	fmt.Println(BuildVersion(false))
-	log.Printf("Loading config file %s..\n", bot.configFile)
+	log.Printf("Loading config file %s..\n", bot.ConfigFile)
 
-	err := bot.config.LoadConfig(bot.configFile)
+	err := bot.Config.LoadConfig(bot.ConfigFile)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	AdjustGoMaxProcs()
-	log.Printf("Bot '%s' started.\n", bot.config.Name)
-	log.Printf("Fiat display currency: %s.", bot.config.FiatDisplayCurrency)
-	log.Printf("Bot dry run mode: %v\n", common.IsEnabled(bot.dryRun))
+	log.Printf("Bot '%s' started.\n", bot.Config.Name)
+	log.Printf("Fiat display currency: %s.", bot.Config.FiatDisplayCurrency)
+	log.Printf("Bot dry run mode: %v\n", common.IsEnabled(bot.DryRun))
 
-	if bot.config.SMS.Enabled {
-		bot.smsglobal = smsglobal.New(bot.config.SMS.Username, bot.config.SMS.Password,
-			bot.config.Name, bot.config.SMS.Contacts)
+	if bot.Config.SMS.Enabled {
+		bot.Smsglobal = smsglobal.New(bot.Config.SMS.Username, bot.Config.SMS.Password,
+			bot.Config.Name, bot.Config.SMS.Contacts)
 		log.Printf(
 			"SMS support enabled. Number of SMS contacts %d.\n",
-			bot.smsglobal.GetEnabledContacts(),
+			bot.Smsglobal.GetEnabledContacts(),
 		)
 	} else {
 		log.Println("SMS support disabled.")
@@ -89,30 +79,30 @@ func main() {
 
 	log.Printf(
 		"Available Exchanges: %d. Enabled Exchanges: %d.\n",
-		len(bot.config.Exchanges), bot.config.CountEnabledExchanges(),
+		len(bot.Config.Exchanges), bot.Config.CountEnabledExchanges(),
 	)
 
 	SetupExchanges()
-	if len(bot.exchanges) == 0 {
+	if len(bot.Exchanges) == 0 {
 		log.Fatalf("No exchanges were able to be loaded. Exiting")
 	}
 
 	// TODO: Fix hack, allow 2 seconds to update exchange settings
 	time.Sleep(time.Second * 2)
 
-	if bot.config.CurrencyExchangeProvider == "yahoo" {
+	if bot.Config.CurrencyExchangeProvider == "yahoo" {
 		currency.SetProvider(true)
 	} else {
 		currency.SetProvider(false)
 	}
-	log.Printf("Currency exchange provider: %s.", bot.config.CurrencyExchangeProvider)
+	log.Printf("Currency exchange provider: %s.", bot.Config.CurrencyExchangeProvider)
 
-	bot.config.RetrieveConfigCurrencyPairs(true)
+	bot.Config.RetrieveConfigCurrencyPairs(true)
 	err = currency.SeedCurrencyData(common.JoinStrings(currency.BaseCurrencies, ","))
 	if err != nil {
 		currency.SwapProvider()
 		log.Printf("'%s' currency exchange provider failed, swapping to %s and testing..",
-			bot.config.CurrencyExchangeProvider, currency.GetProvider())
+			bot.Config.CurrencyExchangeProvider, currency.GetProvider())
 		err = currency.SeedCurrencyData(common.JoinStrings(currency.BaseCurrencies, ","))
 		if err != nil {
 			log.Fatalf("Fatal error retrieving config currencies. Error: %s", err)
@@ -120,8 +110,8 @@ func main() {
 	}
 	log.Println("Successfully retrieved config currencies.")
 
-	bot.portfolio = &portfolio.Portfolio
-	bot.portfolio.SeedPortfolio(bot.config.Portfolio)
+	bot.Portfolio = &portfolio.Portfolio
+	bot.Portfolio.SeedPortfolio(bot.Config.Portfolio)
 	SeedExchangeAccountInfo(GetAllEnabledExchangeAccountInfo().Data)
 	go portfolio.StartPortfolioWatcher()
 
@@ -130,19 +120,19 @@ func main() {
 	go TickerUpdaterRoutine()
 	go OrderbookUpdaterRoutine()
 
-	if bot.config.Webserver.Enabled {
-		listenAddr := bot.config.Webserver.ListenAddress
+	if bot.Config.Webserver.Enabled {
+		listenAddr := bot.Config.Webserver.ListenAddress
 		log.Printf(
 			"HTTP Webserver support enabled. Listen URL: http://%s:%d/\n",
 			common.ExtractHost(listenAddr), common.ExtractPort(listenAddr),
 		)
-		router := NewRouter(bot.exchanges)
+		router := NewRouter(bot.Exchanges)
 		log.Fatal(http.ListenAndServe(listenAddr, router))
 	} else {
 		log.Println("HTTP RESTful Webserver support disabled.")
 	}
 
-	<-bot.shutdown
+	<-bot.Shutdown
 	Shutdown()
 }
 
@@ -183,10 +173,10 @@ func HandleInterrupt() {
 // Shutdown correctly shuts down bot saving configuration files
 func Shutdown() {
 	log.Println("Bot shutting down..")
-	bot.config.Portfolio = portfolio.Portfolio
+	bot.Config.Portfolio = portfolio.Portfolio
 
-	if !bot.dryRun {
-		err := bot.config.SaveConfig(bot.configFile)
+	if !bot.DryRun {
+		err := bot.Config.SaveConfig(bot.ConfigFile)
 
 		if err != nil {
 			log.Println("Unable to save config.")
