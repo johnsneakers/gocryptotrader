@@ -20,7 +20,9 @@ Join our slack to discuss all things related to GoCryptoTrader! [GoCryptoTrader 
 |----------|------|-----------|-----|
 | Alphapoint | Yes  | Yes        | NA  |
 | ANXPRO | Yes  | No        | NA  |
+| Binance| Yes  | No        | NA  |
 | Bitfinex | Yes  | Yes        | NA  |
+| Bithumb | Yes  | NA       | NA  |
 | Bitstamp | Yes  | Yes       | NA  |
 | Bittrex | Yes | No | NA |
 | BTCC | Yes  | Yes     | No  |
@@ -28,15 +30,19 @@ Join our slack to discuss all things related to GoCryptoTrader! [GoCryptoTrader 
 | COINUT | Yes | No | NA |
 | GDAX(Coinbase) | Yes | Yes | No|
 | Gemini | Yes | NA | NA |
-| Huobi | Yes | Yes |No |
+| HitBTC | Yes | Yes | NA |
+| Huobi.Pro | Yes | No |No |
 | ItBit | Yes | NA | NA |
 | Kraken | Yes | NA | NA |
 | LakeBTC | Yes | No | NA |
 | Liqui | Yes | No | NA |
 | LocalBitcoins | Yes | NA | NA |
-| OKCoin (both) | Yes | Yes | No |
+| OKCoin China | Yes | Yes | No |
+| OKCoin International | Yes | Yes | No |
+| OKEX | Yes | No | No |
 | Poloniex | Yes | Yes | NA |
 | WEX     | Yes  | NA        | NA  |
+| Yobit | Yes | NA | NA |
 
 We are aiming to support the top 20 highest volume exchanges based off the [CoinMarketCap exchange data](https://coinmarketcap.com/exchanges/volume/24-hour/).
 
@@ -81,7 +87,8 @@ platform.
 ```bash
 go get github.com/thrasher-/gocryptotrader
 cd $GOPATH/src/github.com/thrasher-/gocryptotrader
-go install
+make get
+make install
 cp $GOPATH/src/github.com/thrasher-/gocryptotrader/config_example.json $GOPATH/bin/config.json
 ```
 
@@ -101,7 +108,7 @@ copy %GOPATH%\src\github.com\thrasher-\gocryptotrader\config_example.json %GOPAT
 
 <img src="https://github.com/thrasher-/gocryptotrader/blob/master/web/src/assets/early-dumb-donate.png?raw=true" hspace="70">
 
-If this framework helped you in any way, or you would like to support the developers working on it, please donate Bitcoin to: 
+If this framework helped you in any way, or you would like to support the developers working on it, please donate Bitcoin to:
 
 ***1F5zVDgNjorJ51oGebSvNCrSAHpwGkUdDB***
 

@@ -7,7 +7,9 @@ import (
 	"github.com/thrasher-/gocryptotrader/common"
 	exchange "github.com/thrasher-/gocryptotrader/exchanges"
 	"github.com/thrasher-/gocryptotrader/exchanges/anx"
+	"github.com/thrasher-/gocryptotrader/exchanges/binance"
 	"github.com/thrasher-/gocryptotrader/exchanges/bitfinex"
+	"github.com/thrasher-/gocryptotrader/exchanges/bithumb"
 	"github.com/thrasher-/gocryptotrader/exchanges/bitstamp"
 	"github.com/thrasher-/gocryptotrader/exchanges/bittrex"
 	"github.com/thrasher-/gocryptotrader/exchanges/btcc"
@@ -15,6 +17,7 @@ import (
 	"github.com/thrasher-/gocryptotrader/exchanges/coinut"
 	"github.com/thrasher-/gocryptotrader/exchanges/gdax"
 	"github.com/thrasher-/gocryptotrader/exchanges/gemini"
+        "github.com/thrasher-/gocryptotrader/exchanges/hitbtc"
 	"github.com/thrasher-/gocryptotrader/exchanges/huobi"
 	"github.com/thrasher-/gocryptotrader/exchanges/itbit"
 	"github.com/thrasher-/gocryptotrader/exchanges/kraken"
@@ -22,8 +25,10 @@ import (
 	"github.com/thrasher-/gocryptotrader/exchanges/liqui"
 	"github.com/thrasher-/gocryptotrader/exchanges/localbitcoins"
 	"github.com/thrasher-/gocryptotrader/exchanges/okcoin"
+	"github.com/thrasher-/gocryptotrader/exchanges/okex"
 	"github.com/thrasher-/gocryptotrader/exchanges/poloniex"
 	"github.com/thrasher-/gocryptotrader/exchanges/wex"
+	"github.com/thrasher-/gocryptotrader/exchanges/yobit"
 )
 
 // vars related to exchange functions
@@ -126,8 +131,12 @@ func LoadExchange(name string) error {
 	switch nameLower {
 	case "anx":
 		exch = new(anx.ANX)
+	case "binance":
+		exch = new(binance.Binance)
 	case "bitfinex":
 		exch = new(bitfinex.Bitfinex)
+	case "bithumb":
+		exch = new(bithumb.Bithumb)
 	case "bitstamp":
 		exch = new(bitstamp.Bitstamp)
 	case "bittrex":
@@ -142,6 +151,8 @@ func LoadExchange(name string) error {
 		exch = new(gdax.GDAX)
 	case "gemini":
 		exch = new(gemini.Gemini)
+	case "hitbtc":
+		exch = new(hitbtc.HitBTC)
 	case "huobi":
 		exch = new(huobi.HUOBI)
 	case "itbit":
@@ -158,10 +169,14 @@ func LoadExchange(name string) error {
 		exch = new(okcoin.OKCoin)
 	case "okcoin international":
 		exch = new(okcoin.OKCoin)
+	case "okex":
+		exch = new(okex.OKEX)
 	case "poloniex":
 		exch = new(poloniex.Poloniex)
 	case "wex":
 		exch = new(wex.WEX)
+	case "yobit":
+		exch = new(yobit.Yobit)
 	default:
 		return ErrExchangeNotFound
 	}
