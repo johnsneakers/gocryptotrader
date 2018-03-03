@@ -243,19 +243,57 @@ func TestStringContains(t *testing.T) {
 	}
 }
 
-func TestDataContains(t *testing.T) {
+func TestStringDataContains(t *testing.T) {
 	t.Parallel()
-	originalHaystack := []string{"hello", "world", "data", "Contains", "string"}
-	originalNeedle := "world"
+	originalHaystack := []string{"hello", "world", "USDT", "Contains", "string"}
+	originalNeedle := "USD"
 	anotherNeedle := "thing"
 	expectedOutput := true
 	expectedOutputTwo := false
-	actualResult := DataContains(originalHaystack, originalNeedle)
+	actualResult := StringDataContains(originalHaystack, originalNeedle)
 	if actualResult != expectedOutput {
 		t.Errorf("Test failed. Expected '%v'. Actual '%v'",
 			expectedOutput, actualResult)
 	}
-	actualResult = DataContains(originalHaystack, anotherNeedle)
+	actualResult = StringDataContains(originalHaystack, anotherNeedle)
+	if actualResult != expectedOutputTwo {
+		t.Errorf("Test failed. Expected '%v'. Actual '%v'",
+			expectedOutput, actualResult)
+	}
+}
+
+func TestStringDataCompare(t *testing.T) {
+	t.Parallel()
+	originalHaystack := []string{"hello", "WoRld", "USDT", "Contains", "string"}
+	originalNeedle := "WoRld"
+	anotherNeedle := "USD"
+	expectedOutput := true
+	expectedOutputTwo := false
+	actualResult := StringDataCompare(originalHaystack, originalNeedle)
+	if actualResult != expectedOutput {
+		t.Errorf("Test failed. Expected '%v'. Actual '%v'",
+			expectedOutput, actualResult)
+	}
+	actualResult = StringDataCompare(originalHaystack, anotherNeedle)
+	if actualResult != expectedOutputTwo {
+		t.Errorf("Test failed. Expected '%v'. Actual '%v'",
+			expectedOutput, actualResult)
+	}
+}
+
+func TestStringDataContainsUpper(t *testing.T) {
+	t.Parallel()
+	originalHaystack := []string{"bLa", "BrO", "sUp"}
+	originalNeedle := "Bla"
+	anotherNeedle := "ning"
+	expectedOutput := true
+	expectedOutputTwo := false
+	actualResult := StringDataContainsUpper(originalHaystack, originalNeedle)
+	if actualResult != expectedOutput {
+		t.Errorf("Test failed. Expected '%v'. Actual '%v'",
+			expectedOutput, actualResult)
+	}
+	actualResult = StringDataContainsUpper(originalHaystack, anotherNeedle)
 	if actualResult != expectedOutputTwo {
 		t.Errorf("Test failed. Expected '%v'. Actual '%v'",
 			expectedOutput, actualResult)

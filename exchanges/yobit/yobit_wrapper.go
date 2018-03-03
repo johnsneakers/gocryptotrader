@@ -1,6 +1,7 @@
 package yobit
 
 import (
+	"errors"
 	"log"
 
 	"github.com/thrasher-/gocryptotrader/common"
@@ -64,7 +65,7 @@ func (y *Yobit) GetTickerPrice(p pair.CurrencyPair, assetType string) (ticker.Pr
 // GetOrderbookEx returns the orderbook for a currency pair
 func (y *Yobit) GetOrderbookEx(p pair.CurrencyPair, assetType string) (orderbook.Base, error) {
 	ob, err := orderbook.GetOrderbook(y.GetName(), p, assetType)
-	if err == nil {
+	if err != nil {
 		return y.UpdateOrderbook(p, assetType)
 	}
 	return ob, nil
@@ -117,4 +118,11 @@ func (y *Yobit) GetExchangeAccountInfo() (exchange.AccountInfo, error) {
 	}
 
 	return response, nil
+}
+
+// GetExchangeHistory returns historic trade data since exchange opening.
+func (y *Yobit) GetExchangeHistory(p pair.CurrencyPair, assetType string) ([]exchange.TradeHistory, error) {
+	var resp []exchange.TradeHistory
+
+	return resp, errors.New("trade history not yet implemented")
 }

@@ -89,13 +89,13 @@ func TestGetEnabledExchanges(t *testing.T) {
 	}
 
 	exchanges := cfg.GetEnabledExchanges()
-	if len(exchanges) != 24 {
+	if len(exchanges) != 26 {
 		t.Error(
 			"Test failed. TestGetEnabledExchanges. Enabled exchanges value mismatch",
 		)
 	}
 
-	if !common.DataContains(exchanges, "Bitfinex") {
+	if !common.StringDataCompare(exchanges, "Bitfinex") {
 		t.Error(
 			"Test failed. TestGetEnabledExchanges. Expected exchange Bitfinex not found",
 		)
@@ -141,7 +141,7 @@ func TestGetDisabledExchanges(t *testing.T) {
 }
 
 func TestCountEnabledExchanges(t *testing.T) {
-	defaultEnabledExchanges := 24
+	defaultEnabledExchanges := 26
 	GetConfigEnabledExchanges := GetConfig()
 	err := GetConfigEnabledExchanges.LoadConfig(ConfigTestFile)
 	if err != nil {
